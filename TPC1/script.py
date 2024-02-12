@@ -8,39 +8,79 @@ file = open("./texto/MRB-01-RuaDoCampo.xml",'r')
 tree = ET.parse("./texto/MRB-01-RuaDoCampo.xml")
 root = tree.getroot()
 
+def extractName():
+    return root.find('./meta/nome').text
 
-
-def extractName(element):
-    return element.find('./meta/nome').text
-
-def extractImages(element):
+def extractImages():
     imageInfo = []
-    for image in element.findall('./corpo/figura'):
+    for image in root.findall('./corpo/figura'):
         imageInfo.append((image.find('imagem').get('path'),image.find('legenda').text))
-    return {extractName(element):imageInfo}
+    return {extractName():imageInfo}
 
-def extractDescrition(element):
-    rua_paragrafos = []
-    for paragrafo in element.findall('./corpo/para'):
-        para_text = paragrafo.text.strip() if paragrafo.text else ''
+def extractDefenition():
 
-        for child_elem in paragrafo:
-            if child_elem.tag == 'lugar':
-                lugar_text = child_elem.text.strip() if child_elem.text else ''
-                para_text += f' <a href="{lugar_text}.html">{lugar_text}</a>'
+    content = []
 
-            elif child_elem.tag == 'data':
-                data_text = child_elem.text.strip() if child_elem.text else ''
-                para_text += f' {data_text}'
+    paragrafos = root.findall('./corpo/para')
 
-            elif child_elem.tag == 'entidade' and child_elem.get('tipo') == 'instituição':
-                entidade_text = child_elem.text.strip() if child_elem.text else ''
-                para_text += f' {entidade_text}'
-
-        # Append the processed paragraph to the list
-        rua_paragrafos.append(para_text)
-
-    return rua_paragrafos
+    for para in paragrafos:
+        paragrafo = ''
+        paragrafo += para.text.strip() if para.text else ''
+        
+        for elem in para:
+            text = f' <Strong>{elem.text.strip()}</Strong> ' if elem.text else ''
+            if elem.tag == 'lugar':
+                paragrafo += text
+            elif elem.tag == 'data':
+                paragrafo += text
+            elif elem.tag == 'entidade':
+                paragrafo += text
+            else:
+                paragrafo += text
+        
+            if elem.tail:
+                paragrafo += elem.tail.strip()
+        
+        content.append(f'<p>{paragrafo}</p>')
     
+
+    return content
+
+
+def buildHTML():
+    html='''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Engweb2024</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    '''
+
+    template = html
+
+    template += f'<h1>{extractName()}</h1>\n'
+    template += f'    <h2>Descrição:</h2>\n'
     
-print(extractDescrition(root))
+    description = extractDefenition()
+
+    for para in description:
+        template+=f'        {para}\n'
+    
+
+
+    template += "</body>\n"
+    template += "</html>"
+
+    template += (f'<div class="image-with-caption">\n')
+    template += (f'    <img src="{"img_path"}" alt="Imagem da Rua">\n')
+    template += (f'    <p>{"legenda"}</p>\n')
+    template += ('</div>\n')
+    template += ('</div>\n')
+
+    file1 = open("teste1.html","w",encoding="utf-8")
+    file1.write(template)
+    file1.close()    
+
+buildHTML()
