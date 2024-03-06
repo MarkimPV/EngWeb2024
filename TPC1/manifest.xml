@@ -12,9 +12,9 @@
         </uc>
     </meta>
     <resumo>
-        <p>Primeiro parágrafo</p>
-        <p>Segundo parágrafo</p>
-        <p>Terceiro parágrafo</p>
+        <p>Criação de um índice que tenha ligação para cada rua com toda a informação a ela referente.</p>
+        <p>Criar para cada rua uma página (No exercicio fazer apenas para duas ou 3).</p>
+        <p>Extrair a informação de XML e criar HTML.</p>
     </resumo>
     <resultados>
         <resultado>resultado 1</resultado>
