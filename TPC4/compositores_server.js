@@ -4,7 +4,7 @@
 
 var http = require('http')
 var axios = require('axios')
-var templates = require('./templates')
+var templates = require('./templates.js')
 var static = require('./static.js')
 const { parse } = require('querystring');
 
